@@ -69,7 +69,7 @@
             <el-button type="danger" icon="el-icon-delete" @click="removeUserById(scope.row.id)"></el-button>
             <!-- 设置按钮 -->
             <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
-              <el-button type="warning" icon="el-icon-setting"></el-button>
+              <el-button type="warning" icon="el-icon-setting" @click="setRole(scope.row)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -129,11 +129,38 @@
         <el-form-item label="手机" prop="mobile">
           <el-input v-model="editForm.mobile" ></el-input>
         </el-form-item>
-
       </el-form>
       <div slot="footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="editUserInfo">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 分配角色的对话框 -->
+    <el-dialog
+      title="分配角色"
+      :visible.sync="setRoleDialogVisible"
+      width="width"
+      @close ="setRoleClosed"
+      >
+      <div>
+        <p>当前的用户: {{userInfo.username}} </p>
+        <p>当前的角色: {{userInfo.role_name}} </p>
+        <p>分配新角色:
+          <el-select v-model="selectedRoleId" placeholder="请选择">
+            <el-option
+              v-for="item in roleList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+
+        </p>
+      </div>
+
+      <div slot="footer">
+        <el-button @click="setRoleDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -148,12 +175,16 @@ export default {
       cb(new Error('请输入合法的邮箱地址'))
     }
     return {
+      setRoleDialogVisible: false,
       queryInfo: {
         query: '',
         pagenum: 1,
         pagesize: 2
       },
       userlist: [],
+      userInfo: {},
+      roleList: [],
+      selectedRoleId: '',
       total: 0,
       dialogVisible: false,
       addForm: {
@@ -204,6 +235,33 @@ export default {
     this.getUserList()
   },
   methods: {
+    setRoleClosed () {
+      this.selectedRoleId = ''
+      this.userInfo = {}
+      this.roleList = []
+    },
+    async saveRoleInfo () {
+      if (!this.selectedRoleId) {
+        return this.$message.error('请选择值!')
+      }
+      const { data: res } = await this.$http.put(`users/${this.userInfo.id}/role`, { rid: this.selectedRoleId })
+      if (res.meta.status !== 200) {
+        console.log(res)
+        return this.$message.error('发生错误')
+      }
+      this.$message.success('修改成功')
+      this.getUserList()
+      this.setRoleDialogVisible = false
+    },
+    async setRole (info) {
+      this.userInfo = info
+      const { data: res } = await this.$http.get('roles')
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取角色列表失败')
+      }
+      this.roleList = res.data
+      this.setRoleDialogVisible = true
+    },
     async getUserList () {
       const { data: res } = await this.$http.get('users', { params: this.queryInfo })
       if (res.meta.status !== 200) {
@@ -299,7 +357,4 @@ export default {
 
 </script>
 <style lang="less" scoped>
-* {
-  color: aliceblue;
-}
 </style>

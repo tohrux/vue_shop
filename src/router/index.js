@@ -4,6 +4,8 @@ import login from '../components/login.vue'
 import home from '../components/Home.vue'
 import welcome from '../components/Welcome.vue'
 import users from '../components/users/Users.vue'
+import rights from '../components/power/Rights.vue'
+import roles from '../components/power/Roles.vue'
 Vue.use(VueRouter)
 
 const routes = [{
@@ -23,6 +25,12 @@ const routes = [{
   }, {
     path: '/users',
     component: users
+  }, {
+    path: '/rights',
+    component: rights
+  }, {
+    path: '/roles',
+    component: roles
   }]
 }
 ]
@@ -35,11 +43,16 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   // to 将要访问的路径
   // from 代表从哪个路径跳转过来
-  if (to.path === '/login') return next()
-  // 获取token
   const tokenStr = window.sessionStorage.getItem('token')
-  if (!tokenStr) return next('/login')
-  next()
+  if (tokenStr) {
+    next()
+  } else {
+    if (to.path === '/login') {
+      next()
+    } else {
+      next('/login')
+    }
+  }
 })
 
 export default router
