@@ -4,6 +4,7 @@ body,
     height: 100%;
     margin: 0;
     padding: 0;
+    min-width: 800px;
 }
 
 .el-breadcrumb {
@@ -16,6 +17,8 @@ body,
 }
 
 .el-table {
+    margin-bottom: 15px;
     margin-top: 15px;
     font-size: 12px;
 }
+
