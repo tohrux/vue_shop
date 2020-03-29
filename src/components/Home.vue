@@ -139,7 +139,7 @@ export default {
   background-color: rgb(30,30,30);
 }
 .toggle-button{
-  background-color: rgb(255,255,255);
+  background-color: rgb(45,45,45);
   color:rgb(0,122,204);
   font-size: 16px;
   line-height: 24px;
