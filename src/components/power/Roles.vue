@@ -71,7 +71,7 @@
                 </el-row>
               </el-col>
             </el-row>
-            <pre>{{ scope.row }}</pre>
+            <!-- <pre>{{ scope.row }}</pre> -->
           </template>
         </el-table-column>
         <el-table-column type="index"> </el-table-column>
