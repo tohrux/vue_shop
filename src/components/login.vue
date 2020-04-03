@@ -80,7 +80,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .login_container {
-  background-color: #2b4b6b;
+  background-color: rgb(200,235,223);
   height: 100%;
 }
 .login_form {
